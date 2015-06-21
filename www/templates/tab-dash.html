@@ -1,0 +1,38 @@
+<ion-view view-title="Parkings">
+  <ion-nav-buttons side="right" >
+    <a class="button button-clear button-positive" ng-show="userSignedIn()" href="#/tab/dash-form">
+      <i class="ion-plus-circled"></i>
+      Add
+    </a>
+  </ion-nav-buttons> 
+
+  <ion-content>
+
+    <div class="list">
+
+      <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+          <input type="text" ng-model="searchQuery" placeholder="Search Parkings">
+        </label>
+        <button class="button button-small">
+          Search
+        </button>
+      </div>
+
+    </div>
+
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="parking in parkings | filter:searchQuery" type="item-text-wrap" href="#/tab/dash/{{parking.$id}}">
+        <!--<img ng-src="{{parking.image_urls['91x121'][0].url}}" >-->
+        <img ng-src="img/list-icon.png" >
+        <h2>{{parking.address}}</h2>
+        <p>Hours: {{parking.hrs_ini}} - {{parking.hrs_end}} &nbsp;&nbsp; Rate: {{parking.rate | currency}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+        <ion-option-button class="button-assertive" ng-click="remove(parking)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
+

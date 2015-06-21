@@ -1,0 +1,23 @@
+<ion-view view-title="Parking">
+  <ion-content>
+    <div class="list card">
+      
+      <div class="item item-avatar">
+        <img ng-src="img/list-icon.png" >
+        <h2>{{parking.address}}</h2>
+        <p><b>Rate:</b> {{parking.rate | currency}} &nbsp;&nbsp;<b>Hours:</b> {{parking.hrs_ini}} <b>to</b> {{parking.hrs_end}}</p>
+        <p><b>Comment:</b> {{parking.schedule}}</p>
+      </div>
+      <div class="item">
+        <b>Lat: </b> {{parking.latitude}} &nbsp;&nbsp; <b>Long: </b> {{parking.longitude}}
+      </div>
+      <div class="item">
+        <img src="data:image/jpg;base64,{{parking.photo}}" style="max-width: 100%;" ng-if="(parking.photo != '')">
+      </div>
+    </div>
+    <div id="map1" class="map" data-tap-disabled="true"></div>
+    <!--<div id="map1" class="map" data-tap-disabled="true" style="width:700px; height:500px; margin-left:10px; margin-rigth:10px;"></div>-->
+
+  </ion-content>
+</ion-view>
+

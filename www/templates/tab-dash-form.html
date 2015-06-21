@@ -1,0 +1,43 @@
+<ion-view view-title="Add Parking">
+  <ion-content>
+    <div class="list list-inset">
+      <label class="item item-input ">
+        <span class="input-label">Address:</span>
+        <input type="text" ng-model="parking.address">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" >Rate:</span>
+        <input type="number" ng-model="parking.rate">
+      </label>
+      <label class="item item-input">
+        <span class="input-label" >Hours :</span>
+        <input type="text" ng-model="parking.hrs_ini" size="5" maxlength="5">
+        <span class="input-label" > to </span>
+        <input type="text" ng-model="parking.hrs_end" size="5" maxlength="5">
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Comment:</span>
+        
+        <textarea rows="2" ng-model="parking.schedule"></textarea>
+      </label>
+      <label class="item item-input">
+          <button class="button button-icon icon ion-map" ng-click="selectLocation()"> Select location </button>
+      </label>
+      <label class="item item-input">
+          <button class="button button-icon icon ion-camera" ng-click="takePicture()"> Select picture </button>
+      </label>
+      <img src="data:image/jpg;base64,{{parking.photo}}" style="max-width: 100%;" ng-if="(parking.photo != '')">
+      <div class="item">
+        <b>Lat: </b> {{parking.latitude}}
+        <b>Long: </b> {{parking.longitude}}
+      </div>
+      <button class="button button-block button-positive" ng-click="uploadParking()">
+        Subir!
+      </button>
+    </div>
+
+  <!--  <div id="map" class="map" data-tap-disabled="true"></div> -->
+
+  </ion-content>
+</ion-view>
+
