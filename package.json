@@ -17,7 +17,9 @@
   "cordovaPlugins": [
     "org.apache.cordova.device",
     "com.ionic.keyboard",
-    "https://github.com/apache/cordova-plugin-whitelist"
+    "https://github.com/apache/cordova-plugin-whitelist",
+    "org.apache.cordova.camera",
+    "cordova-plugin-camera"
   ],
   "cordovaPlatforms": [
     "android",

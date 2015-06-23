@@ -10,7 +10,6 @@ angular.module('starter.controllers', ['firebase','ngCordova','ionic.service.cor
     var itemRef = new Firebase("https://parkingapp-dg.firebaseio.com/parkings/" + parking.$id);
     itemRef.remove();
 
-//    parking.remove();
   }
 
 })
@@ -126,16 +125,11 @@ angular.module('starter.controllers', ['firebase','ngCordova','ionic.service.cor
       var parkingRef =  $rootScope.refirebase.child("parkings").push($scope.parking);
       var parkingId = parkingRef.key();
       console.log(parkingId);
-      $state.go('tab.dash-detail',{parkingId: parkingId});
+      //$state.go('tab.dash-detail',{parkingId: parkingId});
+      $state.go('tab.dash');
     }
 
     $scope.selectLocation = function() {
-      /*
-      var parkingRef =  $rootScope.refirebase.child("parkings").push($scope.parking);
-      var parkingId = parkingRef.key();
-      console.log(parkingId);
-      */
-      //$state.go('tab.dash-form-map',{parkingId: parkingId});
       console.log('Seleccionar mapa');
       $state.go('tab.dash-form-map');
     }
@@ -146,8 +140,6 @@ angular.module('starter.controllers', ['firebase','ngCordova','ionic.service.cor
 .controller('DashFormMapCtrl', function($scope, $firebaseArray, $rootScope, $state, $cordovaCamera, $cordovaGeolocation) {
 
      console.log("esta aqui");
-
-    // $scope.parking = {address: '', schedule: '', rate:'' , latitude:-17.3933, longitude:-66.1570, photo: '', hrs_ini: '', hrs_end: ''};
 
       var myLatlng = new google.maps.LatLng(-17.3933, -66.1570);
 
@@ -163,22 +155,58 @@ angular.module('starter.controllers', ['firebase','ngCordova','ionic.service.cor
       var marker = new google.maps.Marker({
               position: new google.maps.LatLng(-17.3933, -66.1570),
               map: map,
-              title: "Mi locacion",
+              title: "Location Parking",
               options: { draggable: true }
       });
 
-/*
+    google.maps.event.addListener(marker, 'dragend', function() {
+        $scope.$apply(function(){
+          //Stop listening changes
+        //  watch.clearWatch();
+          var pos = marker.getPosition();
+          console.log(pos);
+          console.log(pos.A.toFixed(4));
+          $rootScope.parking.latitude  = pos.A.toFixed(4);
+          $rootScope.parking.longitude = pos.F.toFixed(4);
+
+         // $scope.parking.latitude  = pos.A.toFixed(4);
+         // $scope.parking.longitude = pos.F;
+        });
+    });
+
+   console.log("llego aqui");
+
+
+})
+
+.controller('MapLocCtrl', function($scope, $firebaseArray, $rootScope, $state, $cordovaCamera, $cordovaGeolocation) {
+
+      var myLatlng = new google.maps.LatLng(-17.3933, -66.1570);
+
+      var mapOptions = {
+        //  center: myLatlng,
+          zoom: 16,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+
+      var map = new google.maps.Map(document.getElementById("map2"), mapOptions);
+
+
+      var marker = new google.maps.Marker({
+           //   position: new google.maps.LatLng(-17.3933, -66.1570),
+              icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+              map: map,
+              title: "My location"
+      });
+
+
     var posOptions = {timeout: 10000, enableHighAccuracy: false};
 
     $cordovaGeolocation
     .getCurrentPosition(posOptions)
     .then(function (position) {
       console.log(position);
-      $scope.parking.latitude  = position.coords.latitude
-      $scope.parking.longitude = position.coords.longitude
-
       map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-          
       marker.setPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
 
     }, function(err) {
@@ -200,45 +228,45 @@ angular.module('starter.controllers', ['firebase','ngCordova','ionic.service.cor
       },
       function(position) {
         console.log(position);
-        $scope.parking.latitude  = position.coords.latitude;
-        $scope.parking.longitude = position.coords.longitude;
 
         marker.setPosition(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
 
     });
-*/
-    google.maps.event.addListener(marker, 'dragend', function() {
-        $scope.$apply(function(){
-          //Stop listening changes
-        //  watch.clearWatch();
-          var pos = marker.getPosition();
-          console.log(pos);
-          $rootScope.parking.latitude  = pos.A;
-          $rootScope.parking.longitude = pos.F;
 
-          $scope.parking.latitude  = pos.A;
-          $scope.parking.longitude = pos.F;
+     console.log("nuevos marcadores");
+
+    // Additional Markers //
+        $scope.map=map;
+        var infoWindow = new google.maps.InfoWindow();
+        
+        var createMarker = function (info){
+            console.log("createMarker"+info.address);
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(info.latitude, info.longitude),
+                map: $scope.map,
+                animation: google.maps.Animation.DROP,
+                title: info.address  
+            });
+
+            marker.content = '<div class="infoWindowContent">Rate: ' + info.rate + '  Hours: ' + info.hrs_ini + ' to '+ info.hrs_end +'</div>';
+            google.maps.event.addListener(marker, 'click', function(){
+                infoWindow.setContent('<h5>' + marker.title + '</h5>' + marker.content);
+                infoWindow.open($scope.map, marker);
+            });
+
+            marker.setPosition(new google.maps.LatLng(info.latitude, info.longitude));
+        }  
+
+
+        var ref = new Firebase("https://parkingapp-dg.firebaseio.com/parkings");
+
+        ref.on("child_added", function(snapshot) {
+          console.log(snapshot.val());
+          createMarker(snapshot.val());
+        }, function (errorObject) {
+          console.log("The read failed: " + errorObject.code);
         });
-    });
 
-   console.log("llego aqui");
-
-
-})
-
-.controller('ChatsCtrl', function($scope, Chats, $rootScope, $state, $ionicHistory) {
-
-  if (!$rootScope.userSignedIn()){
-    $ionicHistory.nextViewOptions({
-      disableAnimate: true,
-      disableBack: true
-    });
-  	$state.go('sign-in');
-  }
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
 })
 
 .controller('DashDetailCtrl', function($scope, $stateParams, $firebaseObject) {
@@ -283,9 +311,6 @@ angular.module('starter.controllers', ['firebase','ngCordova','ionic.service.cor
 
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
 
 .controller('SignInCtrl', ['$scope', '$rootScope', '$window', '$localstorage' , '$ionicUser', 
   function ($scope, $rootScope, $window, $localstorage, $ionicUser) {

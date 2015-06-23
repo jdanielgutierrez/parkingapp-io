@@ -8,3 +8,7 @@
     height: 100%;
 }
 
+ion-item.item:hover a {
+  background-color: LightSkyBlue;
+  box-shadow: inset 0px 0px 0px 1px slategray;
+}
